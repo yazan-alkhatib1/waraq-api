@@ -26,6 +26,10 @@ public class TranslateDocEntity extends BaseEntity {
     private TranslateRequestStatus status;
 
     @OneToOne
+    @JoinColumn(name = "request_id")
+    private TranslateRequestEntity request;
+
+    @OneToOne
     @JoinColumn(name = "document_id")
     private MediaEntity document;
 

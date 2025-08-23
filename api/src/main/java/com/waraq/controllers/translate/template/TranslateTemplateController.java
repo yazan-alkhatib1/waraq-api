@@ -1,4 +1,4 @@
-package com.waraq.controllers.template;
+package com.waraq.controllers.translate.template;
 
 import com.waraq.controllers.BaseCRUDController;
 import com.waraq.dto.admin.translate.template.TranslateTemplateCreateRequest;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Monitored
 @RestController
-@RequestMapping("/api/v1/admin/translate/templates")
+@RequestMapping("/api/v1/translate/templates")
 public class TranslateTemplateController extends BaseCRUDController<TranslateTemplateCreateRequest, TranslateTemplateUpdateRequest, TranslateTemplateResponse> {
 
     private final TranslateTemplateService translateTemplateService;
