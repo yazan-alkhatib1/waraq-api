@@ -1,0 +1,17 @@
+version: '3'                                      #Used for syntax
+
+services:
+  payment-aggregator:                             #Name of Service
+    container_name: waraq                       #Name of Container
+    image: postgres                               #Name of Docker Image
+    ports:
+      - 5554:5432                                     #Default Port Or (port:new port)
+
+    environment:
+      POSTGRES_USER: waraq
+      POSTGRES_PASSWORD: waraq
+      POSTGRES_DB: waraq
+
+volumes:
+    payment-aggregator:
+      driver: local                              #To run it locally
