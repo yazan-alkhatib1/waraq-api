@@ -40,7 +40,6 @@ public abstract class BaseCRUDController<C extends CreateDTO, U extends UpdateDT
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<R>> delete(@PathVariable Long id) {
-        getService().softDelete(id);
         return new ResponseEntity<>(Response.<R>builder()
                 .code(CODE.OK.getId())
                 .message(CODE.OK.name())

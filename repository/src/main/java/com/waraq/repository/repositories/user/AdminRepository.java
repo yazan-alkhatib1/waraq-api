@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AdminRepository extends BaseRepository<AdminEntity, Long> {
+public interface AdminRepository extends BaseRepository<AdminEntity> {
     @Query("SELECT a from #{#entityName} a WHERE user_id = :userId AND is_active=true")
     Optional<AdminEntity> findByUserId(Long userId);
 }
