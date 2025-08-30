@@ -16,6 +16,7 @@ import com.waraq.service.mappers.user.AdminUserMapper;
 import com.waraq.service.user.validation.UserValidationService;
 import com.waraq.validator.CompositeValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,14 +29,15 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @Service
 public class AdminUserServiceImpl extends BaseServiceImpl<WaraqUserEntity, AdminCreateUserRequest, AdminUpdateUserRequest, AdminUserResponse> implements AdminUserService {
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final WaraqUserRepository waraqUserRepository;
     private final AdminUserMapper adminUserMapper;
     private final UserValidationService userValidationService;
     private final RepositoryFactory repositoryFactory;
-    public AdminUserServiceImpl(RepositoryFactory repositoryFactory, UserValidationService userValidationService) {
+    public AdminUserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, RepositoryFactory repositoryFactory, UserValidationService userValidationService) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.waraqUserRepository = repositoryFactory.getRepository(WaraqUserRepository.class);
-        this.adminUserMapper = new AdminUserMapper(repositoryFactory);
+        this.adminUserMapper = new AdminUserMapper(repositoryFactory,bCryptPasswordEncoder);
         this.userValidationService = userValidationService;
         this.repositoryFactory = repositoryFactory;
     }

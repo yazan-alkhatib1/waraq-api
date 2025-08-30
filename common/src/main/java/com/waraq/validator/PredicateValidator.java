@@ -19,7 +19,7 @@ public class PredicateValidator<P, R> implements Validator<P, List<R>> {
 
     @Override
     public List<R> validate(P input) {
-        return inputPredicate.test(input) ?
+        return !inputPredicate.test(input) ?
                 singletonList(function.apply(input)) :
                 emptyList();
     }

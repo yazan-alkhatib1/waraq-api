@@ -12,17 +12,19 @@ import com.waraq.repository.entities.user.UserEntity;
 import com.waraq.repository.entities.user.WaraqUserEntity;
 import com.waraq.repository.repositories.media.MediaRepository;
 import com.waraq.service.mappers.BaseMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import static java.util.Objects.nonNull;
 
 
 public class AdminUserMapper implements BaseMapper<WaraqUserEntity, AdminCreateUserRequest, AdminUserResponse> {
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RepositoryFactory repositoryFactory;
-    public AdminUserMapper(RepositoryFactory repositoryFactory) {
+    public AdminUserMapper(RepositoryFactory repositoryFactory, BCryptPasswordEncoder bCryptPasswordEncoder1) {
         this.repositoryFactory = repositoryFactory;
 
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder1;
     }
     @Override
     public WaraqUserEntity mapCreateDtoToEntity(AdminCreateUserRequest createDto) {
@@ -34,7 +36,7 @@ public class AdminUserMapper implements BaseMapper<WaraqUserEntity, AdminCreateU
                         .username(createDto.getPhoneNumber())
                         .email(createDto.getEmail().toLowerCase())
                         .phoneNumber(createDto.getPhoneNumber())
-                        .password("waraq123")
+                        .password(bCryptPasswordEncoder.encode("waraq123"))
                         .createdBy(UserLoader.userDetails().getId())
                         .updatedBy(UserLoader.userDetails().getId())
                         .creationDate(now)

@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, SIGNUP_PATH).permitAll()
                         .requestMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, API_KEY_USER_ID_PATH).permitAll()
-                        .requestMatchers("/waraq/swagger-ui/**", "/waraq/v3/api-docs/**", "/waraq/swagger-ui.html").permitAll())
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> accessDenied(response)));
         return httpSecurity.build();

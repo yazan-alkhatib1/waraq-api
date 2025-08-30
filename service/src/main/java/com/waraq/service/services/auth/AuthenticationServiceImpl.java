@@ -63,8 +63,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private void validateLoginRequest(LoginRequest request) {
         List<String> violations = new CompositeValidator<LoginRequest, String>()
-                .addValidator(p -> isStringEmpty(p.getEmail()), messageSource.getMessage("error.message.email.not.empty", null, LocaleContextHolder.getLocale()))
-                .addValidator(p -> isStringEmpty(p.getPassword()), messageSource.getMessage("error.message.password.not.empty", null, LocaleContextHolder.getLocale()))
+                .addValidator(p -> !isStringEmpty(p.getEmail()), messageSource.getMessage("error.message.email.not.empty", null, LocaleContextHolder.getLocale()))
+                .addValidator(p -> !isStringEmpty(p.getPassword()), messageSource.getMessage("error.message.password.not.empty", null, LocaleContextHolder.getLocale()))
                 .validate(request);
         joinViolations(violations);
     }

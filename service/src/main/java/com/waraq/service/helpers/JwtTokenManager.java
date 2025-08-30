@@ -5,11 +5,16 @@ import com.waraq.repository.entities.user.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.io.Serial;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -17,6 +22,7 @@ import java.util.function.Function;
 import static com.waraq.repository.enums.Role.CLIENT;
 
 @Component
+@Slf4j
 public class JwtTokenManager implements Serializable {
 
     @Serial
@@ -24,14 +30,39 @@ public class JwtTokenManager implements Serializable {
 
     private static final String BEARER = "Bearer ";
 
-    private final String jwtSecret;
+    private final SecretKey secretKey;
 
     private final Long jwtExpiration;
 
     public JwtTokenManager(@Value("${pa.jwt.secret}") String jwtSecret,
                            @Value("${pa.jwt.expiration}") Long jwtExpiration) {
-        this.jwtSecret = jwtSecret;
+        this.secretKey = initSecretKey(jwtSecret);
         this.jwtExpiration = jwtExpiration;
+    }
+
+    private SecretKey initSecretKey(String configuredSecret) {
+        try {
+            if (configuredSecret == null || configuredSecret.isBlank()) {
+                log.warn("pa.jwt.secret is blank or not set. Generating a secure random key for HS512. DO NOT use this in production.");
+                return Keys.secretKeyFor(SignatureAlgorithm.HS512);
+            }
+            // Try Base64 first (recommended for configuration)
+            byte[] keyBytes;
+            try {
+                keyBytes = Base64.getDecoder().decode(configuredSecret);
+            } catch (IllegalArgumentException e) {
+                // Not valid Base64; use raw UTF-8 bytes
+                keyBytes = configuredSecret.getBytes(StandardCharsets.UTF_8);
+            }
+            if (keyBytes.length < 64) { // 512 bits required for HS512
+                log.warn("Configured JWT secret is too short for HS512 ({} bytes). Generating a secure random key instead. Update pa.jwt.secret to a Base64-encoded 512-bit (or longer) key.", keyBytes.length);
+                return Keys.secretKeyFor(SignatureAlgorithm.HS512);
+            }
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (Exception ex) {
+            log.error("Failed to initialize JWT secret key. Falling back to a generated secure key.", ex);
+            return Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        }
     }
 
     public String getEmailFromToken(String token) {
@@ -48,7 +79,7 @@ public class JwtTokenManager implements Serializable {
     }
 
     private Claims getAllClaimsAccessFromToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
     }
 
     private boolean isTokenExpired(String token) {
@@ -83,7 +114,7 @@ public class JwtTokenManager implements Serializable {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact());
     }
 
