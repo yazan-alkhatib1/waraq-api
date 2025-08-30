@@ -138,7 +138,7 @@ public class ControllerHandler {
     }
 
     @ExceptionHandler(WaraqException.class)
-    public ResponseEntity<Response<String>> handleVaultException(WaraqException ex) {
+    public ResponseEntity<Response<String>> handleWaraqException(WaraqException ex) {
         log.error("Error during request processing ", ex);
         return new ResponseEntity<>(Response.<String>builder()
                 .data(ex.getMessage())

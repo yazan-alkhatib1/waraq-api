@@ -1,7 +1,7 @@
 package com.waraq.dto.address.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.waraq.dto.ResponseDto;
+import com.waraq.dto.ResponseDTO;
 import com.waraq.enums.CountryCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AddressResponse implements ResponseDto {
+public class AddressResponse implements ResponseDTO {
 
     private Long id;
 

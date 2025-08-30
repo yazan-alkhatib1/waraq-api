@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseList<R extends ResponseDto> {
+public class ResponseList<R> {
 
     private List<R> response;
 
