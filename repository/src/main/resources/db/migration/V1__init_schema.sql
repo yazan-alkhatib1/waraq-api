@@ -149,13 +149,12 @@ CREATE TABLE IF NOT EXISTS templates (
 );
 
 -- Seed: default admin user and records
--- Note: password is BCrypt hash for 'Admin@123'
--- Hash generated with BCrypt (10 rounds): $2a$10$u7M3yR7oR2Mk1tT2cVfWfO3sL9e8J5q0ZyqT0q8yqv5HqGkqv6m2K
+-- Note: password is BCrypt hash for 'waraq123'
 
 INSERT INTO users (user_name, first_name, last_name, email, phone_number, password, address_id,
                    creation_date, updated_date, is_active, is_enabled, created_by, updated_by)
 VALUES ('admin', 'System', 'Administrator', 'admin@waraq.com', '+0000000000',
-        '$2a$10$u7M3yR7oR2Mk1tT2cVfWfO3sL9e8J5q0ZyqT0q8yqv5HqGkqv6m2K',
+        '$2a$10$6vZ.ADNgiseBfgGOUGEdvOckTPA/GBTrGjGXbWfeEpIPqrZFDl9ZG',
         NULL, NOW(), NOW(), TRUE, TRUE, NULL, NULL)
 ON CONFLICT (user_name) DO NOTHING;
 
