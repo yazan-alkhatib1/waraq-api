@@ -4,6 +4,7 @@ import com.waraq.entities.BaseEntity;
 import com.waraq.enums.CountryCode;
 import com.waraq.repository.entities.media.MediaEntity;
 import com.waraq.repository.entities.user.UserEntity;
+import com.waraq.repository.entities.user.WaraqUserEntity;
 import com.waraq.repository.enums.TranslateRequestStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +26,7 @@ public class TranslateRequestEntity extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "client_id")
-    private UserEntity client;
+    private WaraqUserEntity client;
 
     @Column(name = "request_date")
     private LocalDateTime requestDate;
@@ -37,12 +38,16 @@ public class TranslateRequestEntity extends BaseEntity {
     private int totalPages;
 
     @OneToOne
+    @JoinColumn(name = "manager_id")
+    private WaraqUserEntity manager;
+
+    @OneToOne
     @JoinColumn(name = "translator_id")
-    private UserEntity translator;
+    private WaraqUserEntity translator;
 
     @OneToOne
     @JoinColumn(name = "proofreader_id")
-    private UserEntity proofreader;
+    private WaraqUserEntity proofreader;
 
     @Column(name = "status")
     private TranslateRequestStatus status;
@@ -54,19 +59,25 @@ public class TranslateRequestEntity extends BaseEntity {
     @JoinColumn(name = "mistakes_id")
     private MediaEntity mistakesDocument;
 @Builder
-    public TranslateRequestEntity(LocalDateTime creationDate, LocalDateTime updatedDate, Boolean isActive,
-                                  Boolean isEnabled, Long createdBy, Long updatedBy, Long id, UserEntity client,
-                                  LocalDateTime requestDate, String studentName, int totalPages, UserEntity translator,
-                                  UserEntity proofreader, TranslateRequestStatus status, LocalDateTime deliveryDate) {
+
+    public TranslateRequestEntity(LocalDateTime creationDate, LocalDateTime updatedDate,
+                                  Boolean isActive, Boolean isEnabled, Long createdBy, Long updatedBy,
+                                  Long id, WaraqUserEntity client, LocalDateTime requestDate,
+                                  String studentName, int totalPages, WaraqUserEntity manager,
+                                  WaraqUserEntity translator, WaraqUserEntity proofreader,
+                                  TranslateRequestStatus status,
+                                  LocalDateTime deliveryDate, MediaEntity mistakesDocument) {
         super(creationDate, updatedDate, isActive, isEnabled, createdBy, updatedBy);
         this.id = id;
         this.client = client;
         this.requestDate = requestDate;
         this.studentName = studentName;
         this.totalPages = totalPages;
+        this.manager = manager;
         this.translator = translator;
         this.proofreader = proofreader;
         this.status = status;
         this.deliveryDate = deliveryDate;
+        this.mistakesDocument = mistakesDocument;
     }
 }

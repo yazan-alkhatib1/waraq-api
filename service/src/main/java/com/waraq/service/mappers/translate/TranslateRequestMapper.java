@@ -7,10 +7,10 @@ import com.waraq.helpers.UserLoader;
 import com.waraq.repositories.RepositoryFactory;
 import com.waraq.repository.entities.media.MediaEntity;
 import com.waraq.repository.entities.translate.TranslateRequestEntity;
-import com.waraq.repository.entities.user.UserEntity;
+import com.waraq.repository.entities.user.WaraqUserEntity;
 import com.waraq.repository.enums.TranslateRequestStatus;
 import com.waraq.repository.repositories.media.MediaRepository;
-import com.waraq.repository.repositories.user.UserRepository;
+import com.waraq.repository.repositories.user.WaraqUserRepository;
 import com.waraq.service.mappers.BaseMapper;
 
 import java.time.LocalDateTime;
@@ -28,9 +28,9 @@ public class TranslateRequestMapper implements BaseMapper<TranslateRequestEntity
     @Override
     public TranslateRequestEntity mapCreateDtoToEntity(TranslateRequestCreateRequest createDto) {
         final LocalDateTime now = LocalDateTime.now();
-        UserEntity client = getUser(createDto.getClientId());
-        UserEntity translator = nonNull(createDto.getTranslatorId()) ? getUser(createDto.getTranslatorId()) : null;
-        UserEntity proofreader = nonNull(createDto.getProofreaderId()) ? getUser(createDto.getProofreaderId()) : null;
+        WaraqUserEntity client = getUser(createDto.getClientId());
+        WaraqUserEntity translator = nonNull(createDto.getTranslatorId()) ? getUser(createDto.getTranslatorId()) : null;
+        WaraqUserEntity proofreader = nonNull(createDto.getProofreaderId()) ? getUser(createDto.getProofreaderId()) : null;
         MediaEntity mistakes = nonNull(createDto.getMistakesDocumentId()) ? getMedia(createDto.getMistakesDocumentId()) : null;
 
         TranslateRequestEntity entity = TranslateRequestEntity.builder()
@@ -77,9 +77,9 @@ public class TranslateRequestMapper implements BaseMapper<TranslateRequestEntity
         return mapEntityToResponseDto(entity);
     }
 
-    private UserEntity getUser(Long userId) {
-        return repositoryFactory.getRepository(UserRepository.class).findById(userId)
-                .orElseThrow(() -> new BodyGuardException("Cannot find active user by id (" + userId + ")"));
+    private WaraqUserEntity getUser(Long userId) {
+        return repositoryFactory.getRepository(WaraqUserRepository.class).findById(userId)
+                .orElseThrow(() -> new BodyGuardException("Cannot find active waraq user by id (" + userId + ")"));
     }
 
     private MediaEntity getMedia(Long mediaId) {
@@ -87,7 +87,7 @@ public class TranslateRequestMapper implements BaseMapper<TranslateRequestEntity
                 .orElseThrow(() -> new BodyGuardException("Cannot find active media by id (" + mediaId + ")"));
     }
 
-    private Long getUserId(UserEntity user) {
+    private Long getUserId(WaraqUserEntity user) {
         return nonNull(user) ? user.getId() : null;
     }
 

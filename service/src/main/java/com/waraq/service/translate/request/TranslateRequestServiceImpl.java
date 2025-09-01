@@ -7,10 +7,10 @@ import com.waraq.exceptions.BodyGuardException;
 import com.waraq.repositories.RepositoryFactory;
 import com.waraq.repository.entities.media.MediaEntity;
 import com.waraq.repository.entities.translate.TranslateRequestEntity;
-import com.waraq.repository.entities.user.UserEntity;
+import com.waraq.repository.entities.user.WaraqUserEntity;
 import com.waraq.repository.repositories.media.MediaRepository;
 import com.waraq.repository.repositories.translate.TranslateRequestRepository;
-import com.waraq.repository.repositories.user.UserRepository;
+import com.waraq.repository.repositories.user.WaraqUserRepository;
 import com.waraq.service.base.BaseServiceImpl;
 import com.waraq.service.mappers.BaseMapper;
 import com.waraq.service.mappers.translate.TranslateRequestMapper;
@@ -88,13 +88,13 @@ public class TranslateRequestServiceImpl extends BaseServiceImpl<TranslateReques
     @Override
     public void preAddValidation(TranslateRequestCreateRequest createDto) {
         List<String> violations = new CompositeValidator<TranslateRequestCreateRequest, String>()
-                .addValidator(r -> nonNull(r.getClientId()) && repositoryFactory.getRepository(UserRepository.class).existsById(r.getClientId()),
-                        "No User found with this id {" + createDto.getClientId() + "}")
+                .addValidator(r -> nonNull(r.getClientId()) && repositoryFactory.getRepository(WaraqUserRepository.class).existsById(r.getClientId()),
+                        "No Waraq User found with this id {" + createDto.getClientId() + "}")
                 .addValidator(r -> hasValue(r.getStudentName()), "Student Name Cannot Be Empty")
                 .addValidator(r -> nonNull(r.getTotalPages()) && r.getTotalPages() > 0, "Total Pages Should Be > 0")
-                .addValidator(r -> r.getTranslatorId() == null || repositoryFactory.getRepository(UserRepository.class).existsById(r.getTranslatorId()),
+                .addValidator(r -> r.getTranslatorId() == null || repositoryFactory.getRepository(WaraqUserRepository.class).existsById(r.getTranslatorId()),
                         "No Translator found with this id {" + createDto.getTranslatorId() + "}")
-                .addValidator(r -> r.getProofreaderId() == null || repositoryFactory.getRepository(UserRepository.class).existsById(r.getProofreaderId()),
+                .addValidator(r -> r.getProofreaderId() == null || repositoryFactory.getRepository(WaraqUserRepository.class).existsById(r.getProofreaderId()),
                         "No Proofreader found with this id {" + createDto.getProofreaderId() + "}")
                 .addValidator(r -> r.getMistakesDocumentId() == null || repositoryFactory.getRepository(MediaRepository.class).existsById(r.getMistakesDocumentId()),
                         "No Media found with this id {" + createDto.getMistakesDocumentId() + "}")
@@ -105,11 +105,11 @@ public class TranslateRequestServiceImpl extends BaseServiceImpl<TranslateReques
     @Override
     public void updatePreValidation(TranslateRequestUpdateRequest updateDTO) {
         List<String> violations = new CompositeValidator<TranslateRequestUpdateRequest, String>()
-                .addValidator(r -> r.getClientId() == null || repositoryFactory.getRepository(UserRepository.class).existsById(r.getClientId()),
-                        "No User found with this id {" + updateDTO.getClientId() + "}")
-                .addValidator(r -> r.getTranslatorId() == null || repositoryFactory.getRepository(UserRepository.class).existsById(r.getTranslatorId()),
+                .addValidator(r -> r.getClientId() == null || repositoryFactory.getRepository(WaraqUserRepository.class).existsById(r.getClientId()),
+                        "No Waraq User found with this id {" + updateDTO.getClientId() + "}")
+                .addValidator(r -> r.getTranslatorId() == null || repositoryFactory.getRepository(WaraqUserRepository.class).existsById(r.getTranslatorId()),
                         "No Translator found with this id {" + updateDTO.getTranslatorId() + "}")
-                .addValidator(r -> r.getProofreaderId() == null || repositoryFactory.getRepository(UserRepository.class).existsById(r.getProofreaderId()),
+                .addValidator(r -> r.getProofreaderId() == null || repositoryFactory.getRepository(WaraqUserRepository.class).existsById(r.getProofreaderId()),
                         "No Proofreader found with this id {" + updateDTO.getProofreaderId() + "}")
                 .addValidator(r -> r.getTotalPages() == null || r.getTotalPages() > 0, "Total Pages Should Be > 0")
                 .addValidator(r -> r.getMistakesDocumentId() == null || repositoryFactory.getRepository(MediaRepository.class).findById(r.getMistakesDocumentId()).isPresent(),
@@ -118,9 +118,9 @@ public class TranslateRequestServiceImpl extends BaseServiceImpl<TranslateReques
         validate(violations);
     }
 
-    private UserEntity getUser(Long userId) {
-        return repositoryFactory.getRepository(UserRepository.class).findById(userId)
-                .orElseThrow(() -> new BodyGuardException("Cannot find active user by id (" + userId + ")"));
+    private WaraqUserEntity getUser(Long userId) {
+        return repositoryFactory.getRepository(WaraqUserRepository.class).findById(userId)
+                .orElseThrow(() -> new BodyGuardException("Cannot find active waraq user by id (" + userId + ")"));
     }
 
     private MediaEntity getMedia(Long mediaId) {

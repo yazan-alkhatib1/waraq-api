@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS requests (
     request_date TIMESTAMP,
     student_name VARCHAR(255),
     total_documents INTEGER,
+    manager_id BIGINT,
     translator_id BIGINT,
     proofreader_id BIGINT,
     status INTEGER,
@@ -105,9 +106,10 @@ CREATE TABLE IF NOT EXISTS requests (
     is_enabled BOOLEAN NOT NULL,
     created_by BIGINT,
     updated_by BIGINT,
-    CONSTRAINT fk_requests_client FOREIGN KEY (client_id) REFERENCES users(id),
-    CONSTRAINT fk_requests_translator FOREIGN KEY (translator_id) REFERENCES users(id),
-    CONSTRAINT fk_requests_proofreader FOREIGN KEY (proofreader_id) REFERENCES users(id),
+    CONSTRAINT fk_requests_client FOREIGN KEY (client_id) REFERENCES waraq_users(id),
+    CONSTRAINT fk_requests_manager FOREIGN KEY (manager_id) REFERENCES waraq_users(id),
+    CONSTRAINT fk_requests_translator FOREIGN KEY (translator_id) REFERENCES waraq_users(id),
+    CONSTRAINT fk_requests_proofreader FOREIGN KEY (proofreader_id) REFERENCES waraq_users(id),
     CONSTRAINT fk_requests_mistakes FOREIGN KEY (mistakes_id) REFERENCES media(id)
 );
 
